@@ -25,4 +25,20 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
+export const apis = mysqlTable("apis", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 128 }).notNull(),
+  slug: varchar("slug", { length: 128 }).notNull().unique(),
+  description: text("description").notNull(),
+  category: varchar("category", { length: 64 }).notNull(),
+  endpoint: varchar("endpoint", { length: 256 }).notNull(),
+  method: varchar("method", { length: 10 }).default("POST").notNull(),
+  exampleInput: text("exampleInput"),
+  exampleOutput: text("exampleOutput"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type Api = typeof apis.$inferSelect;
+export type InsertApi = typeof apis.$inferInsert;
+
 // TODO: Add your tables here
