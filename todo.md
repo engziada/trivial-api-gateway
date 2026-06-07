@@ -117,18 +117,21 @@ Tier enforcement is handled by RapidAPI's platform, not the backend. The databas
 
 ---
 
-## Post-Launch: RapidAPI Publication
+## Post-Launch: RapidAPI Publication (User Responsibilities)
 
 These steps are completed by the user after receiving the project:
 
 - [ ] Create GitHub repository and push code
-- [ ] Create RapidAPI account
+- [ ] Create RapidAPI account at https://rapidapi.com
 - [ ] Upload GitHub repo to RapidAPI
 - [ ] Follow RAPIDAPI_TIER_SETUP.md to configure pricing tiers
 - [ ] Set up documentation on RapidAPI
 - [ ] Enable analytics and monitoring
 - [ ] Test endpoints through RapidAPI portal
 - [ ] Publish to RapidAPI marketplace
+
+**Estimated Time:** 30-45 minutes
+**Support:** All documentation and guides are included in the project
 
 ---
 
