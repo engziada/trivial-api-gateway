@@ -156,13 +156,33 @@ This design makes the APIs the focus, not the interface.
 
 ---
 
+## Tier System
+
+The API Gateway supports a hybrid tier system for monetization:
+
+**Free Tier** - 100 requests/day
+- UUID/CUID Generator
+- Lorem Ipsum Generator
+- Base64 Encoder/Decoder
+- Text Case Converter
+- Morse Code Converter
+
+**Pro Tier** - 10,000 requests/day
+- All 20 utility APIs
+- Priority support
+- Higher rate limits
+
+For detailed RapidAPI tier configuration, see [RAPIDAPI_TIER_SETUP.md](./RAPIDAPI_TIER_SETUP.md).
+
+---
+
 ## Deployment
 
 ### Deploy to RapidAPI
 
 1. Create a RapidAPI account at https://rapidapi.com
 2. Click "Create API" and upload this GitHub repository
-3. Configure pricing tiers (free, pro, enterprise)
+3. Follow [RAPIDAPI_TIER_SETUP.md](./RAPIDAPI_TIER_SETUP.md) to configure pricing tiers
 4. Set up documentation and examples
 5. Enable analytics and monitoring
 6. Publish to the RapidAPI marketplace

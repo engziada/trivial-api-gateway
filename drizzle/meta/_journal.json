@@ -15,6 +15,13 @@
       "when": 1780705710979,
       "tag": "0001_lethal_bill_hollister",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1780866661519,
+      "tag": "0002_woozy_nuke",
+      "breakpoints": true
     }
   ]
 }

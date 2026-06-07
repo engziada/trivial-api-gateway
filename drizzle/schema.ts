@@ -41,4 +41,50 @@ export const apis = mysqlTable("apis", {
 export type Api = typeof apis.$inferSelect;
 export type InsertApi = typeof apis.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Subscription tiers for the API gateway
+ * Free tier: 5 basic APIs, 100 requests/day
+ * Pro tier: all 20 APIs, 10,000 requests/day
+ */
+export const subscriptionTiers = mysqlTable("subscription_tiers", {
+  id: int("id").autoincrement().primaryKey(),
+  name: varchar("name", { length: 64 }).notNull().unique(),
+  displayName: varchar("displayName", { length: 64 }).notNull(),
+  dailyRateLimit: int("dailyRateLimit").notNull(),
+  monthlyRateLimit: int("monthlyRateLimit").notNull(),
+  description: text("description"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type SubscriptionTier = typeof subscriptionTiers.$inferSelect;
+export type InsertSubscriptionTier = typeof subscriptionTiers.$inferInsert;
+
+/**
+ * User subscriptions - tracks which tier each user is on
+ */
+export const userSubscriptions = mysqlTable("user_subscriptions", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().references(() => users.id),
+  tierId: int("tierId").notNull().references(() => subscriptionTiers.id),
+  status: mysqlEnum("status", ["active", "cancelled", "expired"]).default("active").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  expiresAt: timestamp("expiresAt"),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type UserSubscription = typeof userSubscriptions.$inferSelect;
+export type InsertUserSubscription = typeof userSubscriptions.$inferInsert;
+
+/**
+ * API tier access control
+ * Defines which APIs are available in which tiers
+ */
+export const apiTierAccess = mysqlTable("api_tier_access", {
+  id: int("id").autoincrement().primaryKey(),
+  tierId: int("tierId").notNull().references(() => subscriptionTiers.id),
+  endpoint: varchar("endpoint", { length: 255 }).notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ApiTierAccess = typeof apiTierAccess.$inferSelect;
+export type InsertApiTierAccess = typeof apiTierAccess.$inferInsert;
