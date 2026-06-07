@@ -75,3 +75,10 @@
 - [ ] Export functionality (API calls, responses)
 - [x] Advanced filtering/search (search by name, category, description)
 - [ ] API endpoint code generation (cURL, Python, JS)
+
+## Phase 5: Bug Fixes & Optimization
+
+- [x] Fixed tRPC v11 input envelope format (wrapped inputs in { json: ... })
+- [x] Installed base32-decode library for TOTP support
+- [x] All 20 API endpoints now fully functional and tested
+- [x] Live endpoint testing working correctly from UI

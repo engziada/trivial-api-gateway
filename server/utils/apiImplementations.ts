@@ -4,13 +4,15 @@
  */
 
 import * as crypto from "crypto";
+import base32Decode from "base32-decode";
 
 // ============================================================================
 // 1. TOTP Generator/Validator (RFC 6238)
 // ============================================================================
 
 export function generateTOTP(secret: string): string {
-  const buffer = Buffer.from(secret.replace(/\s/g, ""), "base32" as BufferEncoding);
+  const decoded = base32Decode(secret.replace(/\s/g, ""), "RFC4648");
+  const buffer = Buffer.from(decoded);
   const counter = Math.floor(Date.now() / 30000);
   const counterBuffer = Buffer.alloc(8);
   counterBuffer.writeBigInt64BE(BigInt(counter), 0);
