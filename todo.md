@@ -119,7 +119,7 @@ Tier enforcement is handled by RapidAPI's platform, not the backend. The databas
 
 ## Post-Launch: RapidAPI Publication (User Responsibilities)
 
-These steps are completed by the user after receiving the project:
+These steps are completed by the user after receiving the project. All necessary documentation and guides are included:
 
 - [ ] Create GitHub repository and push code
 - [ ] Create RapidAPI account at https://rapidapi.com
@@ -130,8 +130,9 @@ These steps are completed by the user after receiving the project:
 - [ ] Test endpoints through RapidAPI portal
 - [ ] Publish to RapidAPI marketplace
 
-**Estimated Time:** 30-45 minutes
-**Support:** All documentation and guides are included in the project
+**Estimated Time:** 30-45 minutes  
+**Documentation:** README.md, API_DOCUMENTATION.md, RAPIDAPI_TIER_SETUP.md included  
+**Support:** Step-by-step guides provided for all steps
 
 ---
 
