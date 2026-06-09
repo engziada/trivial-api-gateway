@@ -129,7 +129,7 @@ Tier enforcement is handled by RapidAPI's platform, not the backend. The databas
 
 ## Post-Launch: RapidAPI Publication (User Responsibilities)
 
-These steps are completed by the user after receiving the project. All necessary documentation and guides are included:
+These steps are completed by the user after receiving the project. All necessary documentation and guides are included. **These are external actions outside the codebase:**
 
 - [ ] Create GitHub repository and push code
 - [ ] Create RapidAPI account at https://rapidapi.com
