@@ -43,20 +43,14 @@ describe("API Integration Tests - Valid & Invalid Data", () => {
   // 3. QR Code Generator
   // ============================================
   describe("QR Code Generator", () => {
-    it.skip("should generate QR code with valid text", () => {
-      // generateQRCode not exported from apiImplementations
-      const result = api.generateQRCode?.("https://example.com", "#FF0000", "#FFFFFF");
-      if (result) {
-        expect(result).toContain("data:image");
-      }
+    it("should generate QR code with valid text", async () => {
+      const result = await api.generateQRCode("https://example.com", 200, "FF0000", "FFFFFF");
+      expect(result).toContain("api.qrserver.com");
     });
 
-    it.skip("should handle empty text input", () => {
-      // generateQRCode not exported from apiImplementations
-      const result = api.generateQRCode?.("" , "#FF0000", "#FFFFFF");
-      if (result) {
-        expect(result).toContain("data:image");
-      }
+    it("should handle empty text input", async () => {
+      const result = await api.generateQRCode("", 200, "FF0000", "FFFFFF");
+      expect(result).toContain("api.qrserver.com");
     });
   });
 
@@ -64,20 +58,16 @@ describe("API Integration Tests - Valid & Invalid Data", () => {
   // 4. IP Geolocation
   // ============================================
   describe("IP Geolocation", () => {
-    it.skip("should return geolocation for valid public IP", () => {
-      // getIPInfo not exported from apiImplementations
-      const result = api.getIPInfo?.("8.8.8.8");
-      if (result) {
-        expect(result).toHaveProperty("ip");
-        expect(result.ip).toBe("8.8.8.8");
-      }
+    it("should return geolocation for valid public IP", async () => {
+      const result = await api.getIPGeoData("8.8.8.8");
+      expect(result).toHaveProperty("country");
+      expect(result.country).not.toBe("Unknown");
     });
 
-    it.skip("should handle invalid IP address gracefully", () => {
-      // Function may return error object or handle gracefully
-      const result = api.getIPInfo?.("999.999.999.999");
-      expect(result).toBeDefined();
-    }); // getIPInfo may not be exported or may not handle invalid IPs
+    it("should handle invalid IP address gracefully", async () => {
+      const result = await api.getIPGeoData("999.999.999.999");
+      expect(result.country).toBe("Unknown");
+    });
   });
 
   // ============================================
@@ -125,9 +115,9 @@ describe("API Integration Tests - Valid & Invalid Data", () => {
       expect(result.result).toBeCloseTo(32.8084, 2);
     });
 
-    it.skip("should reject invalid unit", () => {
+    it("should reject invalid unit", () => {
       expect(() => api.convertUnits(10, "invalid", "ft")).toThrow();
-    }); // Skip if implementation doesn't validate
+    });
   });
 
   // ============================================
@@ -140,9 +130,9 @@ describe("API Integration Tests - Valid & Invalid Data", () => {
       expect(result.amount).toBeGreaterThan(0);
     });
 
-    it.skip("should reject invalid currency code", () => {
+    it("should reject invalid currency code", () => {
       expect(() => api.convertCurrency(100, "INVALID", "EUR")).toThrow();
-    }); // Skip if implementation doesn't validate
+    });
   });
 
   // ============================================

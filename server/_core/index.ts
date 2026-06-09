@@ -8,6 +8,7 @@ import { registerStorageProxy } from "./storageProxy";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
+import { restRouter } from "../rest";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -28,7 +29,7 @@ async function findAvailablePort(startPort: number = 3000): Promise<number> {
   throw new Error(`No available port found starting from ${startPort}`);
 }
 
-async function startServer() {
+export async function createApp() {
   const app = express();
   const server = createServer(app);
   // Configure body parser with larger size limit for file uploads
@@ -44,6 +45,8 @@ async function startServer() {
       createContext,
     })
   );
+  // Standard REST API
+  app.use("/api/v1", restRouter);
   // development mode uses Vite, production mode uses static files
   if (process.env.NODE_ENV === "development") {
     await setupVite(app, server);
@@ -51,6 +54,11 @@ async function startServer() {
     serveStatic(app);
   }
 
+  return { app, server };
+}
+
+async function startServer() {
+  const { server } = await createApp();
   const preferredPort = parseInt(process.env.PORT || "3000");
   const port = await findAvailablePort(preferredPort);
 

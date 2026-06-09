@@ -572,7 +572,8 @@ export function getPlaceholderImageURL(
   bgColor: string = "cccccc",
   text?: string
 ): string {
-  const url = `https://via.placeholder.com/${width}x${height}/${bgColor}?text=${text || ""}`;
+  const textParam = text ? `?text=${encodeURIComponent(text)}` : "";
+  const url = `https://placehold.co/${width}x${height}/${bgColor}/000000${textParam}`;
   return url;
 }
 

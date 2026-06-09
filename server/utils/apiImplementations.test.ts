@@ -38,10 +38,19 @@ describe("API Implementations", () => {
     });
   });
 
-  // 4. IP Geolocation Tests - Skip external API calls
+  // 4. IP Geolocation Tests
   describe("IP Geolocation", () => {
-    it("should have geo function defined", () => {
-      expect(typeof api.getIPGeoData).toBe("function");
+    it("should fetch geolocation data for a valid IP", async () => {
+      const geo = await api.getIPGeoData("8.8.8.8");
+      expect(geo.country).toBeDefined();
+      expect(geo.timezone).toBeDefined();
+      expect(geo.country).not.toBe("Unknown");
+    });
+
+    it("should handle invalid IP addresses gracefully", async () => {
+      const geo = await api.getIPGeoData("999.999.999.999");
+      expect(geo.country).toBe("Unknown");
+      expect(geo.timezone).toBe("Unknown");
     });
   });
 
@@ -273,7 +282,7 @@ describe("API Implementations", () => {
     it("should generate placeholder image URL", () => {
       const url = api.getPlaceholderImageURL(300, 200);
       expect(url).toContain("300x200");
-      expect(url).toContain("placeholder.com");
+      expect(url).toContain("placehold.co");
     });
 
     it("should include custom colors", () => {
