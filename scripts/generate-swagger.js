@@ -8,7 +8,7 @@ const swagger = {
     description: "A collection of 20 trivial utility APIs."
   },
   servers: [
-    { url: "/api/v1", description: "Standard REST API" }
+    { url: "https://trivial-api-gateway-ziada.netlify.app/api/v1", description: "Standard REST API" }
   ],
   paths: {
     "/totp/generate": { get: { summary: "Generate TOTP", parameters: [{ name: "secret", in: "query", required: true, schema: { type: "string" } }], responses: { "200": { description: "Success" } } } },
