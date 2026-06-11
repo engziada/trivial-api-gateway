@@ -1,5 +1,5 @@
 import serverless from "serverless-http";
-import { createApp } from "../../server/_core/index";
+import { createApp } from "../../server/_core/app";
 
 let handlerInstance: any;
 
