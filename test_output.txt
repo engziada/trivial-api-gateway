@@ -1,0 +1,271 @@
+
+> trivial-api-gateway@1.0.0 test F:\Web-Projects\TrivialAPIGateway\trivial-api-gateway
+> vitest run
+
+
+[1m[7m[36m RUN [39m[27m[22m [36mv2.1.9 [39m[90mF:/Web-Projects/TrivialAPIGateway/trivial-api-gateway[39m
+
+ [32mΓ£ô[39m server/auth.logout.test.ts [2m([22m[2m1 test[22m[2m)[22m[90m 49[2mms[22m[39m
+ [31mΓ¥»[39m server/utils/apiImplementations.integration.test.ts [2m([22m[2m43 tests[22m[2m | [22m[31m5 failed[39m[2m)[22m[33m 1325[2mms[22m[39m
+[31m   [31m├ù[31m API Integration Tests - Valid & Invalid Data[2m > [22mDisposable Email Detector[2m > [22mshould identify disposable email domain[90m 34[2mms[22m[31m[39m
+[31m     ΓåÆ expected false to be true // Object.is equality[39m
+[31m   [31m├ù[31m API Integration Tests - Valid & Invalid Data[2m > [22mQR Code Generator[2m > [22mshould generate QR code with valid text[90m 140[2mms[22m[31m[39m
+[31m     ΓåÆ expected 'data:image/png;base64,iVBORw0KGgoAAAAΓÇª' to contain 'api.qrserver.com'[39m
+[31m   [31m├ù[31m API Integration Tests - Valid & Invalid Data[2m > [22mQR Code Generator[2m > [22mshould handle empty text input[90m 11[2mms[22m[31m[39m
+[31m     ΓåÆ No input text[39m
+   [33m[2mΓ£ô[22m[39m API Integration Tests - Valid & Invalid Data[2m > [22mIP Geolocation[2m > [22mshould return geolocation for valid public IP [33m510[2mms[22m[39m
+   [33m[2mΓ£ô[22m[39m API Integration Tests - Valid & Invalid Data[2m > [22mIP Geolocation[2m > [22mshould handle invalid IP address gracefully [33m342[2mms[22m[39m
+[31m   [31m├ù[31m API Integration Tests - Valid & Invalid Data[2m > [22mCurrency Converter[2m > [22mshould convert USD to EUR[90m 101[2mms[22m[31m[39m
+[31m     ΓåÆ expected Promise{ΓÇª} to have property "amount"[39m
+[31m   [31m├ù[31m API Integration Tests - Valid & Invalid Data[2m > [22mCurrency Converter[2m > [22mshould reject invalid currency code[90m 9[2mms[22m[31m[39m
+[31m     ΓåÆ expected [Function] to throw an error[39m
+ [31mΓ¥»[39m server/utils/apiImplementations.test.ts [2m([22m[2m54 tests[22m[2m | [22m[31m9 failed[39m[2m)[22m[33m 1346[2mms[22m[39m
+[31m   [31m├ù[31m API Implementations[2m > [22mDisposable Email Detector[2m > [22mshould detect disposable email domains[90m 33[2mms[22m[31m[39m
+[31m     ΓåÆ expected false to be true // Object.is equality[39m
+[31m   [31m├ù[31m API Implementations[2m > [22mQR Code Generator[2m > [22mshould generate a QR code URL[90m 115[2mms[22m[31m[39m
+[31m     ΓåÆ expected 'data:image/png;base64,iVBORw0KGgoAAAAΓÇª' to contain 'api.qrserver.com'[39m
+[31m   [31m├ù[31m API Implementations[2m > [22mQR Code Generator[2m > [22mshould include custom colors in URL[90m 96[2mms[22m[31m[39m
+[31m     ΓåÆ expected 'data:image/png;base64,iVBORw0KGgoAAAAΓÇª' to contain 'FF0000'[39m
+   [33m[2mΓ£ô[22m[39m API Implementations[2m > [22mIP Geolocation[2m > [22mshould fetch geolocation data for a valid IP [33m513[2mms[22m[39m
+[31m   [31m├ù[31m API Implementations[2m > [22mCurrency Converter[2m > [22mshould convert currencies[90m 98[2mms[22m[31m[39m
+[31m     ΓåÆ actual value must be number or bigint, received "undefined"[39m
+[31m   [31m├ù[31m API Implementations[2m > [22mCurrency Converter[2m > [22mshould throw on unsupported currency[90m 5[2mms[22m[31m[39m
+[31m     ΓåÆ expected [Function] to throw an error[39m
+[31m   [31m├ù[31m API Implementations[2m > [22mProfanity Filter[2m > [22mshould detect profanity[90m 88[2mms[22m[31m[39m
+[31m     ΓåÆ expected false to be true // Object.is equality[39m
+[31m   [31m├ù[31m API Implementations[2m > [22mProfanity Filter[2m > [22mshould censor profanity by default[90m 12[2mms[22m[31m[39m
+[31m     ΓåÆ expected 'This is offensive content' to contain '*'[39m
+[31m   [31m├ù[31m API Implementations[2m > [22mProfanity Filter[2m > [22mshould not censor when disabled[90m 8[2mms[22m[31m[39m
+[31m     ΓåÆ expected false to be true // Object.is equality[39m
+[31m   [31m├ù[31m API Implementations[2m > [22mUser Agent Parser[2m > [22mshould detect mobile devices[90m 3[2mms[22m[31m[39m
+[31m     ΓåÆ expected 'mobile' to be 'Mobile' // Object.is equality[39m
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Tests 14 ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  server/utils/apiImplementations.integration.test.ts > API Integration Tests - Valid & Invalid Data > Disposable Email Detector > should identify disposable email domain
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ Γ¥» server/utils/apiImplementations.integration.test.ts:32:22
+     30|       const result = api.isDisposableEmail("test@tempmail.com");
+     31|       expect(typeof result).toBe("boolean");
+     32|       expect(result).toBe(true);
+       |                      ^
+     33|     });
+     34| 
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/14]ΓÄ»
+
+ FAIL  server/utils/apiImplementations.integration.test.ts > API Integration Tests - Valid & Invalid Data > QR Code Generator > should generate QR code with valid text
+AssertionError: expected 'data:image/png;base64,iVBORw0KGgoAAAAΓÇª' to contain 'api.qrserver.com'
+
+Expected: "api.qrserver.com"
+Received: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAAAklEQVR4AewaftIAAARXSURBVO3BUQpjiXYEwayD9r/l8vwZmy6wLhqh9suI9B9I+qND0nRImg5J0yFpOiRNh6TpkDQdkqZD0nRImg5J0yFpOiRNL55K+Ou1fE3Cx7U8kjC1/FHCX6/lXYek6ZA0HZKmQ9J0SJoOSdOLf0PLz0j4moSp5ZGEKeEntPyMhE86JE2HpOmQNB2SpkPSdEiaXnxbwse1fFTCIy1TwtQytUwJU8tPSPi4lm85JE2HpOmQNB2SpkPSdEiaXug9LY+0PJLwSMLUov+bQ9J0SJoOSdMhaTokTYek6YXek/BIy8e1PJIwtei/HZKmQ9J0SJoOSdMhaTokTS++reWv1vJIwtQytUwJj7R8Tcvf7JA0HZKmQ9J0SJoOSdMhaXrxb0j4j5QwtUwJU8sjLVPC1PK2hP+vDknTIWk6JE2HpOmQNB2SphdPteh/aXmk5ee1/Cc6JE2HpOmQNB2SpkPSlP6DJxKmlinhZ7T8hISp5Sck/IyWbzkkTYek6ZA0HZKmQ9J0SJpePNUyJUwtjyQ80vK2hKllSnikZUqYWj4u4Y9apoSp5eMSppZPOiRNh6TpkDQdkqZD0nRIml48lfBIwse1TAlTy9sSppavSvi4lq9JmFoeSZha3nVImg5J0yFpOiRNh6TpkDS9+LaWKeGRhKnlo1qmhEdaHmmZEj4q4eNaHmmZEj7pkDQdkqZD0nRImg5J0yFpSv/BpyV8XMsjCVPL1yQ80jIlPNIyJbytZUqYWqaEj2t51yFpOiRNh6TpkDQdkqZD0pT+gycSfkbLRyVMLVPC1PIzEqaWtyVMLVPC1DIlTC2fdEiaDknTIWk6JE2HpOmQNL34N7T8jIS3tXxcwiMtjyRMLW9LeCThqxKmlncdkqZD0nRImg5J0yFpOiRNL35JwtTySMuU8FEtU8LU8kjCIwk/oeWRlinhkw5J0yFpOiRNh6TpkDQdkqYX35YwtTyS8EjLHyX8FVoeSfh5CVPL1PJJh6TpkDQdkqZD0nRImg5JU/oP9D8lPNLySMLPaPmohEdafsEhaTokTYek6ZA0HZKmF08l/PVa/qjlq1qmhEdapoS3JUwtj7RMCR/X8q5D0nRImg5J0yFpOiRNh6Tpxb+h5WckvC3hkZZHEh5p+ZqWj0uYWqaEqeWTDknTIWk6JE2HpOmQNB2SphfflvBxLT8hYWp5pGVK+LiEr2mZEqaWKWFqedchaTokTYek6ZA0HZKmQ9L0Qu9p+biWR1qmhKllSnhby5QwJTyS8C2HpOmQNB2SpkPSdEiaDknTC70n4atavqrlo1qmhEdapoRPOiRNh6TpkDQdkqZD0nRIml58W8vPa/m4hKnlkYSpZUp4W8uU8HEtv+CQNB2SpkPSdEiaDknTIWl68W9I+KslPNLyVS2PtEwJf5TwVQm/4JA0HZKmQ9J0SJoOSdMhaUr/gaQ/OiRNh6TpkDQdkqZD0nRImg5J0yFpOiRNh6TpkDQdkqb/AhLJG5RUH0W+AAAAAElFTkSuQmCC"
+
+ Γ¥» server/utils/apiImplementations.integration.test.ts:48:22
+     46|     it("should generate QR code with valid text", async () => {
+     47|       const result = await api.generateQRCode("https://example.com", 2ΓÇª
+     48|       expect(result).toContain("api.qrserver.com");
+       |                      ^
+     49|     });
+     50| 
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[2/14]ΓÄ»
+
+ FAIL  server/utils/apiImplementations.integration.test.ts > API Integration Tests - Valid & Invalid Data > QR Code Generator > should handle empty text input
+Error: No input text
+ Γ¥» Object.create node_modules/.pnpm/qrcode@1.5.4/node_modules/qrcode/lib/core/qrcode.js:476:11
+ Γ¥» node_modules/.pnpm/qrcode@1.5.4/node_modules/qrcode/lib/server.js:71:29
+ Γ¥» render node_modules/.pnpm/qrcode@1.5.4/node_modules/qrcode/lib/server.js:69:12
+ Γ¥» Object.toDataURL node_modules/.pnpm/qrcode@1.5.4/node_modules/qrcode/lib/server.js:103:10
+ Γ¥» Module.generateQRCode server/utils/apiImplementations.ts:69:17
+     67|   bgColor: string = "FFFFFF"
+     68| ): Promise<string> {
+     69|   return QRCode.toDataURL(text, {
+       |                 ^
+     70|     width: size,
+     71|     color: {
+ Γ¥» server/utils/apiImplementations.integration.test.ts:52:32
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[3/14]ΓÄ»
+
+ FAIL  server/utils/apiImplementations.integration.test.ts > API Integration Tests - Valid & Invalid Data > Currency Converter > should convert USD to EUR
+AssertionError: expected Promise{ΓÇª} to have property "amount"
+ Γ¥» server/utils/apiImplementations.integration.test.ts:129:22
+    127|     it("should convert USD to EUR", () => {
+    128|       const result = api.convertCurrency(100, "USD", "EUR");
+    129|       expect(result).toHaveProperty("amount");
+       |                      ^
+    130|       expect(result.amount).toBeGreaterThan(0);
+    131|     });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[4/14]ΓÄ»
+
+ FAIL  server/utils/apiImplementations.integration.test.ts > API Integration Tests - Valid & Invalid Data > Currency Converter > should reject invalid currency code
+AssertionError: expected [Function] to throw an error
+ Γ¥» server/utils/apiImplementations.integration.test.ts:134:64
+    132| 
+    133|     it("should reject invalid currency code", () => {
+    134|       expect(() => api.convertCurrency(100, "INVALID", "EUR")).toThrowΓÇª
+       |                                                                ^
+    135|     });
+    136|   });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[5/14]ΓÄ»
+
+ FAIL  server/utils/apiImplementations.test.ts > API Implementations > Disposable Email Detector > should detect disposable email domains
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ Γ¥» server/utils/apiImplementations.test.ts:16:58
+     14|   describe("Disposable Email Detector", () => {
+     15|     it("should detect disposable email domains", () => {
+     16|       expect(api.isDisposableEmail("test@tempmail.com")).toBe(true);
+       |                                                          ^
+     17|       expect(api.isDisposableEmail("user@guerrillamail.com")).toBe(truΓÇª
+     18|     });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[6/14]ΓÄ»
+
+ FAIL  server/utils/apiImplementations.test.ts > API Implementations > QR Code Generator > should generate a QR code URL
+AssertionError: expected 'data:image/png;base64,iVBORw0KGgoAAAAΓÇª' to contain 'api.qrserver.com'
+
+Expected: "api.qrserver.com"
+Received: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADICAYAAACtWK6eAAAAAklEQVR4AewaftIAAAPJSURBVO3BwY0cSQADQZJo/13mrQHHeqjQmNEqI9wfAvC/IgBTBGCKAEwRgCkCMEUApgjAFAGYIgBTBGCKAEwRgCkCMEUApgjA9OiSbf1mbfUm2zppqxPbOmmrE9v6zdrqRgRgigBMEYApAjBFAKYIwBQBmB69rK2+mW1ha6tvZltvigBMEYApAjBFAKYIwBQBmCIA06MPs603tdWbbOukrX4z23pTW31SBGCKAEwRgCkCMEUApgjAFAGYHuFVtnXSVie2hc+JAEwRgCkCMEUApgjAFAGYIgDTI7yqrW601Ylt4T0RgCkCMEUApgjAFAGYIgBTBGB69GFt9S+zrRtt9Ult9ZtFAKYIwBQBmCIAUwRgigBMEYDp0ctsC3+urU5s66StbtjWvywCMEUApgjAFAGYIgBTBGCKAEzuD+GP2daNtsL3igBMEYApAjBFAKYIwBQBmCIA06NLtnXSVie29c3a6qSt3mRbJ211w7a+WVt9UgRgigBMEYApAjBFAKYIwBQBmB59WFud2Nab2uqGbZ201Zts619mWydtdSMCMEUApgjAFAGYIgBTBGCKAEzuD73Itj6prU5s60ZbndjWSVvdsK03tdUN23pTW70pAjBFAKYIwBQBmCIAUwRgigBMjy7Z1klbndjWSVud2NaNtrphW2+yrTe11Q3belNbfVIEYIoATBGAKQIwRQCmCMAUAZjcH3qRbd1oqzfZ1klbfTPbelNbfTPbOmmrGxGAKQIwRQCmCMAUAZgiAFMEYHJ/CH/Mtk7a6sS2TtrqxLZO2uqTbOukrb5ZBGCKAEwRgCkCMEUApgjAFAGY3B+6YFu/WVt9km2dtNUN2zppqzfZ1o22elMEYIoATBGAKQIwRQCmCMAUAZgevaytvplt3bCtk7a60VY3bOukrU5s66StTmzrTbZ10lY3IgBTBGCKAEwRgCkCMEUApgjA9OjDbOtNbfU3s62TtjppqxPbelNbvcm23hQBmCIAUwRgigBMEYApAjBFAKZHeJVt3WirE9v6JNu60VY32upNEYApAjBFAKYIwBQBmCIAUwRgeoSPaqs3tdUN2zppqxu2ddJWnxQBmCIAUwRgigBMEYApAjBFAKZHH9ZWf7O2umFbJ211w7ZO2uqkrU5s6zeLAEwRgCkCMEUApgjAFAGYIgDTo5fZ1m9mWydtdcO2brTViW2dtNWNtrphWydt9aYIwBQBmCIAUwRgigBMEYApAjC5PwTgf0UApgjAFAGYIgBTBGCKAEwRgCkCMEUApgjAFAGYIgBTBGCKAEwRgOk/mjcBjqXR+WQAAAAASUVORK5CYII="
+
+ Γ¥» server/utils/apiImplementations.test.ts:30:19
+     28|     it("should generate a QR code URL", async () => {
+     29|       const url = await api.generateQRCode("Hello World");
+     30|       expect(url).toContain("api.qrserver.com");
+       |                   ^
+     31|       expect(url).toContain("Hello%20World");
+     32|     });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[7/14]ΓÄ»
+
+ FAIL  server/utils/apiImplementations.test.ts > API Implementations > QR Code Generator > should include custom colors in URL
+AssertionError: expected 'data:image/png;base64,iVBORw0KGgoAAAAΓÇª' to contain 'FF0000'
+
+Expected: "FF0000"
+Received: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAASwAAAEsCAYAAAB5fY51AAAAAklEQVR4AewaftIAAAVWSURBVO3BQY4kWg0EwLTV97+y2SFWSE908StnImJyuQAU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU2ACU+MmH3YRfNJevcpOvMpcnN+EXzeWjNgAlNgAlNgAlNgAlNgAlNgAlNgAlNgAlNgAlNgAlNgAlfvJl5vJXuclXuclHzaXaXP4qN/kqG4ASG4ASG4ASG4ASG4ASG4ASG4ASG4ASG4ASG4ASG4ASPyl3k68yl69yE/5BN/kqc6m2ASixASixASixASixASixASixASixASixASixASixASjxE/g/usmTucC/bQBKbABKbABKbABKbABKbABKbABKbABKbABKbABKbABK/AT+B3N5cpMnN3kyF/5gG4ASG4ASG4ASG4ASG4ASG4ASG4ASG4ASG4ASG4ASG4ASPyk3F37RXD5qLk9uUm0u/KINQIkNQIkNQIkNQIkNQIkNQIkNQIkNQIkNQIkNQIkNQImffJmbUOQmT+ZS7Sb8gzYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJSaXC3+sm/xV5sIfbANQYgNQYgNQYgNQYgNQYgNQYgNQYgNQYgNQYgNQYgNQ4icfdpMnc3lyk7/KXJ7M5aNu8mQuT27yUTf5q8yl2gagxAagxAagxAagxAagxAagxAagxAagxAagxAagxAagxORyocZNPmouX+UmT+byUTd5MpcnN/mouTy5yZO5fNQGoMQGoMQGoMQGoMQGoMQGoMQGoMQGoMQGoMQGoMQGoMTkcvmgm3zUXD7qJtXm8uQmX2UuT27yZC4fdZNqc/kqG4ASG4ASG4ASG4ASG4ASG4ASG4ASG4ASG4ASG4ASG4ASPyl3k4+ay1e5yVeZy1eZy0fdpNpcqm0ASmwASmwASmwASmwASmwASmwASmwASmwASmwASmwASvzky8zlyU2q3eTJXJ7c5Mlcntzko+by5CZP5vJkLk9u8lFzeXKTJ3P5KhuAEhuAEhuAEhuAEhuAEhuAEhuAEhuAEhuAEhuAEhuAEpPLhT/WTfhFc/kqN/mouXyVDUCJDUCJDUCJDUCJDUCJDUCJDUCJDUCJDUCJDUCJDUCJyeXyQTfhF83lq9zkyVye3OTJXJ7c5KPm8uQmT+by5CZP5vJVNgAlNgAlNgAlNgAlNgAlNgAlNgAlNgAlNgAlNgAlNgAlfvJl5vJXuclH3eTJXD7qJh91k4+ay1e5yZO5VNsAlNgAlNgAlNgAlNgAlNgAlNgAlNgAlNgAlNgAlNgAlPhJuZt8lblUu8mTuXzUTZ7M5aNu8mQuHzWXJzd5MpevsgEosQEosQEosQEosQEosQEosQEosQEosQEosQEosQEo8RP4D3N5cpMnc+EX3eTJXKptAEpsAEpsAEpsAEpsAEpsAEpsAEpsAEpsAEpsAEpsAEr8BP7DTZ7M5clNnszlyU2ezOXJXJ7c5Mlcntzkr7IBKLEBKLEBKLEBKLEBKLEBKLEBKLEBKLEBKLEBKLEBKPGTcnPhv5jLR93kyVw+ai4fdRP+QRuAEhuAEhuAEhuAEhuAEhuAEhuAEhuAEhuAEhuAEhuAEj/5MjfhF93ko+by5CZP5vLkJk/m8mQuT27yVW7yZC5fZQNQYgNQYgNQYgNQYgNQYgNQYgNQYgNQYgNQYgNQYgNQYnK5ABTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJTYAJT4F4JFqmTZXPAMAAAAAElFTkSuQmCC"
+
+ Γ¥» server/utils/apiImplementations.test.ts:36:19
+     34|     it("should include custom colors in URL", async () => {
+     35|       const url = await api.generateQRCode("Test", 300, "FF0000", "00FΓÇª
+     36|       expect(url).toContain("FF0000");
+       |                   ^
+     37|       expect(url).toContain("00FF00");
+     38|     });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[8/14]ΓÄ»
+
+ FAIL  server/utils/apiImplementations.test.ts > API Implementations > Currency Converter > should convert currencies
+TypeError: actual value must be number or bigint, received "undefined"
+ Γ¥» server/utils/apiImplementations.test.ts:121:29
+    119|     it("should convert currencies", () => {
+    120|       const result = api.convertCurrency(100, "USD", "EUR");
+    121|       expect(result.result).toBeGreaterThan(0);
+       |                             ^
+    122|       expect(result.rate).toBeGreaterThan(0);
+    123|     });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[9/14]ΓÄ»
+
+ FAIL  server/utils/apiImplementations.test.ts > API Implementations > Currency Converter > should throw on unsupported currency
+AssertionError: expected [Function] to throw an error
+ Γ¥» server/utils/apiImplementations.test.ts:126:64
+    124| 
+    125|     it("should throw on unsupported currency", () => {
+    126|       expect(() => api.convertCurrency(100, "INVALID", "USD")).toThrowΓÇª
+       |                                                                ^
+    127|     });
+    128|   });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[10/14]ΓÄ»
+
+ FAIL  server/utils/apiImplementations.test.ts > API Implementations > Profanity Filter > should detect profanity
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ Γ¥» server/utils/apiImplementations.test.ts:177:35
+    175|     it("should detect profanity", () => {
+    176|       const result = api.filterProfanity("This is offensive content");
+    177|       expect(result.hasProfanity).toBe(true);
+       |                                   ^
+    178|     });
+    179| 
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[11/14]ΓÄ»
+
+ FAIL  server/utils/apiImplementations.test.ts > API Implementations > Profanity Filter > should censor profanity by default
+AssertionError: expected 'This is offensive content' to contain '*'
+
+Expected: "*"
+Received: "This is offensive content"
+
+ Γ¥» server/utils/apiImplementations.test.ts:182:30
+    180|     it("should censor profanity by default", () => {
+    181|       const result = api.filterProfanity("This is offensive content");
+    182|       expect(result.cleaned).toContain("*");
+       |                              ^
+    183|     });
+    184| 
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[12/14]ΓÄ»
+
+ FAIL  server/utils/apiImplementations.test.ts > API Implementations > Profanity Filter > should not censor when disabled
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ Γ¥» server/utils/apiImplementations.test.ts:187:35
+    185|     it("should not censor when disabled", () => {
+    186|       const result = api.filterProfanity("This is offensive content", ΓÇª
+    187|       expect(result.hasProfanity).toBe(true);
+       |                                   ^
+    188|       expect(result.cleaned).toBe("This is offensive content");
+    189|     });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[13/14]ΓÄ»
+
+ FAIL  server/utils/apiImplementations.test.ts > API Implementations > User Agent Parser > should detect mobile devices
+AssertionError: expected 'mobile' to be 'Mobile' // Object.is equality
+
+Expected: "Mobile"
+Received: "mobile"
+
+ Γ¥» server/utils/apiImplementations.test.ts:357:27
+    355|         "Mozilla/5.0 (Linux; Android 11; SM-G991B) AppleWebKit/537.36 ΓÇª
+    356|       const info = api.parseUserAgent(ua);
+    357|       expect(info.device).toBe("Mobile");
+       |                           ^
+    358|     });
+    359|   });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[14/14]ΓÄ»
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[31m14 failed[39m[22m[2m | [22m[1m[32m84 passed[39m[22m[90m (98)[39m
+[2m   Start at [22m 21:26:59
+[2m   Duration [22m 6.91s[2m (transform 4.63s, setup 0ms, collect 11.94s, tests 2.72s, environment 2ms, prepare 1.99s)[22m
+
+ΓÇëELIFECYCLEΓÇë Test failed. See above for more details.

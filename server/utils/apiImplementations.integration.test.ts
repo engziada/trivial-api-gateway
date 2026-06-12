@@ -45,12 +45,11 @@ describe("API Integration Tests - Valid & Invalid Data", () => {
   describe("QR Code Generator", () => {
     it("should generate QR code with valid text", async () => {
       const result = await api.generateQRCode("https://example.com", 200, "FF0000", "FFFFFF");
-      expect(result).toContain("api.qrserver.com");
+      expect(result).toContain("data:image/png;base64");
     });
 
-    it("should handle empty text input", async () => {
-      const result = await api.generateQRCode("", 200, "FF0000", "FFFFFF");
-      expect(result).toContain("api.qrserver.com");
+    it("should reject empty text input", async () => {
+      await expect(api.generateQRCode("", 200, "FF0000", "FFFFFF")).rejects.toThrow("Missing text input");
     });
   });
 
@@ -124,14 +123,14 @@ describe("API Integration Tests - Valid & Invalid Data", () => {
   // 8. Currency Converter
   // ============================================
   describe("Currency Converter", () => {
-    it("should convert USD to EUR", () => {
-      const result = api.convertCurrency(100, "USD", "EUR");
+    it("should convert USD to EUR", async () => {
+      const result = await api.convertCurrency(100, "USD", "EUR");
       expect(result).toHaveProperty("amount");
       expect(result.amount).toBeGreaterThan(0);
     });
 
-    it("should reject invalid currency code", () => {
-      expect(() => api.convertCurrency(100, "INVALID", "EUR")).toThrow();
+    it("should reject invalid currency code", async () => {
+      await expect(api.convertCurrency(100, "INVALID", "EUR")).rejects.toThrow();
     });
   });
 

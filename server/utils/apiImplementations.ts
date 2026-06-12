@@ -5,6 +5,15 @@
 
 import * as crypto from "crypto";
 import base32Decode from "base32-decode";
+import disposableDomains from "disposable-email-domains";
+import { Filter } from "bad-words";
+import QRCode from "qrcode";
+import { UAParser } from "ua-parser-js";
+import { LRUCache } from "lru-cache";
+import { marked } from "marked";
+import sanitizeHtml from "sanitize-html";
+import { CronExpressionParser } from "cron-parser";
+import { diffLines, diffWords } from "diff";
 
 // ============================================================================
 // 1. TOTP Generator/Validator (RFC 6238)
@@ -40,32 +49,15 @@ export function validateTOTP(secret: string, token: string): boolean {
 // 2. Disposable Email Detector
 // ============================================================================
 
-const disposableDomains = new Set([
+const disposableDomainSet = new Set([
+  ...disposableDomains,
   "tempmail.com",
   "guerrillamail.com",
-  "mailinator.com",
-  "10minutemail.com",
-  "throwaway.email",
-  "yopmail.com",
-  "temp-mail.org",
-  "maildrop.cc",
-  "sharklasers.com",
-  "spam4.me",
-  "tempmail.us",
-  "temp-mail.io",
-  "trashmail.com",
-  "fakeinbox.com",
-  "mintemail.com",
-  "guerrillamail.info",
-  "temp-mail.net",
-  "mailnesia.com",
-  "10minutemail.net",
-  "tempmail.net",
 ]);
 
 export function isDisposableEmail(email: string): boolean {
   const domain = email.split("@")[1]?.toLowerCase();
-  return domain ? disposableDomains.has(domain) : false;
+  return domain ? disposableDomainSet.has(domain) : false;
 }
 
 // ============================================================================
@@ -78,9 +70,15 @@ export async function generateQRCode(
   color: string = "000000",
   bgColor: string = "FFFFFF"
 ): Promise<string> {
-  const encodedText = encodeURIComponent(text);
-  const url = `https://api.qrserver.com/v1/create-qr-code/?size=${size}x${size}&data=${encodedText}&color=${color}&bgcolor=${bgColor}`;
-  return url;
+  if (!text) throw new Error("Missing text input");
+  return QRCode.toDataURL(text, {
+    width: size,
+    color: {
+      dark: `#${color}`,
+      light: `#${bgColor}`,
+    },
+    margin: 2,
+  });
 }
 
 // ============================================================================
@@ -201,21 +199,39 @@ interface ConversionResult {
 
 const unitConversions: Record<string, Record<string, number>> = {
   length: {
-    m: 1,
-    km: 0.001,
-    cm: 100,
-    mm: 1000,
-    mi: 0.000621371,
-    yd: 1.09361,
-    ft: 3.28084,
-    in: 39.3701,
+    m: 1, km: 0.001, cm: 100, mm: 1000, um: 1e6, nm: 1e9,
+    mi: 0.000621371, yd: 1.09361, ft: 3.28084, in: 39.3701,
+    nmi: 0.000539957, ly: 1.057e-16,
   },
   weight: {
-    kg: 1,
-    g: 1000,
-    mg: 1000000,
-    lb: 2.20462,
-    oz: 35.274,
+    kg: 1, g: 1000, mg: 1e6, ug: 1e9, lb: 2.20462, oz: 35.274,
+    st: 0.157473, t: 0.001, gr: 15432.4, ct: 5000,
+  },
+  area: {
+    "m2": 1, "km2": 1e-6, "cm2": 1e4, "mm2": 1e6, ha: 1e-4, acre: 0.000247105,
+    "ft2": 10.7639, "in2": 1550, "yd2": 1.19599, "mi2": 3.861e-7,
+  },
+  volume: {
+    l: 1, ml: 1000, "m3": 0.001, "cm3": 1000, gal: 0.264172, qt: 1.05669,
+    pt: 2.11338, cup: 4.22675, fl_oz: 33.8141, "ft3": 0.0353147, "in3": 61.0237,
+  },
+  speed: {
+    "m/s": 1, "km/h": 3.6, "mph": 2.23694, "ft/s": 3.28084, knot: 1.94384, mach: 0.00293858,
+  },
+  time: {
+    s: 1, min: 1 / 60, h: 1 / 3600, d: 1 / 86400, wk: 1 / 604800,
+    mo: 1 / 2.628e6, yr: 1 / 3.154e7, ms: 1000, us: 1e6, ns: 1e9,
+  },
+  pressure: {
+    pa: 1, kpa: 0.001, bar: 1e-5, mbar: 0.01, psi: 0.000145038, atm: 9.8692e-6, torr: 0.00750062,
+  },
+  energy: {
+    j: 1, kj: 0.001, cal: 0.239006, kcal: 0.000239006, wh: 0.000277778, kwh: 2.77778e-7,
+    ev: 6.242e18, btu: 0.000947817,
+  },
+  data: {
+    b: 1, kb: 1 / 1024, mb: 1 / 1048576, gb: 1 / 1073741824, tb: 1 / 1099511627776,
+    kib: 1 / 1024, mib: 1 / 1048576, gib: 1 / 1073741824, tib: 1 / 1099511627776,
   },
 };
 
@@ -275,32 +291,48 @@ interface CurrencyConversion {
   result: number;
 }
 
-const exchangeRates: Record<string, number> = {
-  USD: 1,
-  EUR: 0.92,
-  GBP: 0.79,
-  JPY: 149.5,
-  AUD: 1.52,
-  CAD: 1.36,
-  CHF: 0.88,
-  CNY: 7.24,
-  INR: 83.12,
-  MXN: 17.05,
+const fallbackRates: Record<string, number> = {
+  USD: 1, EUR: 0.92, GBP: 0.79, JPY: 149.5, AUD: 1.52,
+  CAD: 1.36, CHF: 0.88, CNY: 7.24, INR: 83.12, MXN: 17.05,
 };
 
-export function convertCurrency(
+const rateCache = new LRUCache<string, number>({
+  max: 500,
+  ttl: 1000 * 60 * 60, // 1 hour
+});
+
+async function fetchRate(from: string, to: string): Promise<number> {
+  const cacheKey = `${from}-${to}`;
+  const cached = rateCache.get(cacheKey);
+  if (cached !== undefined) return cached;
+
+  try {
+    const res = await fetch(
+      `https://api.frankfurter.app/latest?from=${from}&to=${to}`
+    );
+    if (!res.ok) throw new Error(`Frankfurter API error: ${res.status}`);
+    const data = await res.json();
+    const rate = data.rates[to] as number;
+    if (typeof rate !== "number") throw new Error("Rate not found in response");
+    rateCache.set(cacheKey, rate);
+    return rate;
+  } catch {
+    // Fallback to static rates
+    const fromRate = fallbackRates[from];
+    const toRate = fallbackRates[to];
+    if (!fromRate || !toRate) {
+      throw new Error(`Unsupported currency: ${!fromRate ? from : to}`);
+    }
+    return toRate / fromRate;
+  }
+}
+
+export async function convertCurrency(
   amount: number,
   fromCurrency: string,
   toCurrency: string
-): CurrencyConversion {
-  const from = exchangeRates[fromCurrency];
-  const to = exchangeRates[toCurrency];
-
-  if (!from || !to) {
-    throw new Error(`Unsupported currency: ${!from ? fromCurrency : toCurrency}`);
-  }
-
-  const rate = to / from;
+): Promise<CurrencyConversion> {
+  const rate = await fetchRate(fromCurrency, toCurrency);
   const result = amount * rate;
 
   return {
@@ -359,28 +391,11 @@ export function decodeBase64(encoded: string): string {
 // 11. Profanity Filter
 // ============================================================================
 
-const profanityList = [
-  "badword1",
-  "badword2",
-  "offensive",
-  "inappropriate",
-  "vulgar",
-];
+const profanityFilter = new Filter();
 
 export function filterProfanity(text: string, censor: boolean = true): { cleaned: string; hasProfanity: boolean } {
-  let cleaned = text;
-  let hasProfanity = false;
-
-  for (const word of profanityList) {
-    const regex = new RegExp(`\\b${word}\\b`, "gi");
-    if (regex.test(cleaned)) {
-      hasProfanity = true;
-      if (censor) {
-        cleaned = cleaned.replace(regex, "*".repeat(word.length));
-      }
-    }
-  }
-
+  const hasProfanity = profanityFilter.isProfane(text);
+  const cleaned = censor ? profanityFilter.clean(text) : text;
   return { cleaned, hasProfanity };
 }
 
@@ -389,11 +404,7 @@ export function filterProfanity(text: string, censor: boolean = true): { cleaned
 // ============================================================================
 
 export function generateUUID(): string {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0;
-    const v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
+  return crypto.randomUUID();
 }
 
 export function generateCUID(): string {
@@ -676,33 +687,297 @@ interface UserAgentInfo {
 }
 
 export function parseUserAgent(userAgent: string): UserAgentInfo {
-  let browser = "Unknown";
-  let version = "Unknown";
-  let os = "Unknown";
-  let device = "Desktop";
+  const parser = new UAParser(userAgent);
+  const browser = parser.getBrowser();
+  const os = parser.getOS();
+  const device = parser.getDevice();
 
-  if (/Chrome/.test(userAgent) && !/Chromium/.test(userAgent)) {
-    browser = "Chrome";
-    version = userAgent.match(/Chrome\/(\d+)/)?.[1] || "Unknown";
-  } else if (/Safari/.test(userAgent) && !/Chrome/.test(userAgent)) {
-    browser = "Safari";
-    version = userAgent.match(/Version\/(\d+)/)?.[1] || "Unknown";
-  } else if (/Firefox/.test(userAgent)) {
-    browser = "Firefox";
-    version = userAgent.match(/Firefox\/(\d+)/)?.[1] || "Unknown";
-  } else if (/Edge/.test(userAgent)) {
-    browser = "Edge";
-    version = userAgent.match(/Edge\/(\d+)/)?.[1] || "Unknown";
+  return {
+    browser: browser.name || "Unknown",
+    version: browser.version || "Unknown",
+    os: os.name || "Unknown",
+    device: device.type ? device.type.charAt(0).toUpperCase() + device.type.slice(1) : "Desktop",
+  };
+}
+
+// ============================================================================
+// 21. Hash Generator
+// ============================================================================
+
+export function generateHash(text: string, algorithm: "md5" | "sha256" | "sha512" = "sha256"): string {
+  if (!["md5", "sha256", "sha512"].includes(algorithm)) {
+    throw new Error("Unsupported algorithm. Use md5, sha256, or sha512.");
   }
+  return crypto.createHash(algorithm).update(text).digest("hex");
+}
 
-  if (/Windows/.test(userAgent)) os = "Windows";
-  else if (/Mac/.test(userAgent)) os = "macOS";
-  else if (/Linux/.test(userAgent)) os = "Linux";
-  else if (/Android/.test(userAgent)) os = "Android";
-  else if (/iPhone|iPad/.test(userAgent)) os = "iOS";
+// ============================================================================
+// 22. JWT Encoder / Decoder / Validator
+// ============================================================================
 
-  if (/Mobile/.test(userAgent) || /Android/.test(userAgent)) device = "Mobile";
-  else if (/iPad/.test(userAgent)) device = "Tablet";
+function base64UrlEscape(str: string): string {
+  return str.replace(/\+/g, "-").replace(/\//g, "_").replace(/=/g, "");
+}
+function base64UrlUnescape(str: string): string {
+  str += Array(5 - (str.length % 4)).join("=");
+  return str.replace(/\-/g, "+").replace(/\_/g, "/");
+}
 
-  return { browser, version, os, device };
+export function encodeJWT(payload: Record<string, unknown>, secret: string): string {
+  const header = { alg: "HS256", typ: "JWT" };
+  const encodedHeader = base64UrlEscape(Buffer.from(JSON.stringify(header)).toString("base64"));
+  const encodedPayload = base64UrlEscape(Buffer.from(JSON.stringify(payload)).toString("base64"));
+  const signature = crypto.createHmac("sha256", secret).update(`${encodedHeader}.${encodedPayload}`).digest("base64");
+  return `${encodedHeader}.${encodedPayload}.${base64UrlEscape(signature)}`;
+}
+
+export function decodeJWT(token: string): { header: unknown; payload: unknown } {
+  const parts = token.split(".");
+  if (parts.length !== 3) throw new Error("Invalid JWT format");
+  const header = JSON.parse(Buffer.from(base64UrlUnescape(parts[0]), "base64").toString());
+  const payload = JSON.parse(Buffer.from(base64UrlUnescape(parts[1]), "base64").toString());
+  return { header, payload };
+}
+
+export function validateJWT(token: string, secret: string): boolean {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return false;
+    const signature = crypto.createHmac("sha256", secret).update(`${parts[0]}.${parts[1]}`).digest("base64");
+    return base64UrlEscape(signature) === parts[2];
+  } catch {
+    return false;
+  }
+}
+
+// ============================================================================
+// 23. Fake Data Generator
+// ============================================================================
+
+const firstNames = ["James","Mary","John","Patricia","Robert","Jennifer","Michael","Linda","William","Elizabeth","David","Barbara","Richard","Susan","Joseph","Jessica","Thomas","Sarah","Charles","Karen"];
+const lastNames = ["Smith","Johnson","Williams","Brown","Jones","Garcia","Miller","Davis","Rodriguez","Martinez","Hernandez","Lopez","Gonzalez","Wilson","Anderson","Thomas","Taylor","Moore","Jackson","Martin"];
+const domains = ["example.com","test.org","demo.net","mail.io","sample.dev"];
+const companies = ["Acme Corp","Globex","Soylent Corp","Initech","Umbrella Corp","Stark Ind","Wayne Ent","Cyberdyne","Massive Dynamic","Hooli"];
+const streets = ["Main St","Elm St","Maple Ave","Oak Dr","Pine Ln","Cedar Rd","Birch Blvd","Willow Way","Spruce St","Ash Ave"];
+const cities = ["Springfield","Rivertown","Lakeview","Hill Valley","Smallville","Gotham","Metropolis","Star City","Central City","Coast City"];
+
+export function generateFakeData(type: string, count: number = 1): unknown[] {
+  const results: unknown[] = [];
+  for (let i = 0; i < count; i++) {
+    const rand = (arr: string[]) => arr[Math.floor(Math.random() * arr.length)];
+    switch (type) {
+      case "name":
+        results.push(`${rand(firstNames)} ${rand(lastNames)}`);
+        break;
+      case "email":
+        results.push(`${rand(firstNames).toLowerCase()}.${rand(lastNames).toLowerCase()}@${rand(domains)}`);
+        break;
+      case "company":
+        results.push(rand(companies));
+        break;
+      case "address":
+        results.push(`${Math.floor(Math.random() * 9000) + 1000} ${rand(streets)}, ${rand(cities)}, USA`);
+        break;
+      case "phone":
+        results.push(`+1-555-${String(Math.floor(Math.random() * 9000) + 1000).padStart(4, "0")}`);
+        break;
+      case "uuid":
+        results.push(crypto.randomUUID());
+        break;
+      case "sentence": {
+        const words = ["the","quick","brown","fox","jumps","over","lazy","dog","hello","world","lorem","ipsum","dolor","sit","amet"];
+        const s = Array.from({ length: 6 }, () => rand(words)).join(" ");
+        results.push(s.charAt(0).toUpperCase() + s.slice(1) + ".");
+        break;
+      }
+      default:
+        throw new Error(`Unsupported fake data type: ${type}`);
+    }
+  }
+  return results;
+}
+
+// ============================================================================
+// 24. Markdown to HTML
+// ============================================================================
+
+export function markdownToHTML(markdown: string): string {
+  return marked.parse(markdown) as string;
+}
+
+// ============================================================================
+// 25. HTML Sanitizer
+// ============================================================================
+
+export function sanitizeHTML(dirty: string): string {
+  return sanitizeHtml(dirty, {
+    allowedTags: sanitizeHtml.defaults.allowedTags.concat(["img","h1","h2"]),
+    allowedAttributes: { ...sanitizeHtml.defaults.allowedAttributes, img: ["src","alt"] },
+  });
+}
+
+// ============================================================================
+// 26. Cron Expression Parser
+// ============================================================================
+
+export function parseCron(expression: string): { readable: string; next: string[]; valid: boolean } {
+  try {
+    const parsed = CronExpressionParser.parse(expression);
+    const next = [
+      parsed.next().toDate().toISOString(),
+      parsed.next().toDate().toISOString(),
+      parsed.next().toDate().toISOString(),
+    ];
+    return { readable: parsed.stringify(), next, valid: true };
+  } catch {
+    return { readable: "", next: [], valid: false };
+  }
+}
+
+// ============================================================================
+// 27. Regex Tester + Explainer
+// ============================================================================
+
+export function testRegex(pattern: string, flags: string = "", testString: string = ""): {
+  valid: boolean;
+  matches: string[];
+  error: string | null;
+  explain: string;
+} {
+  try {
+    const regex = new RegExp(pattern, flags);
+    const matches = (testString.match(regex) || []).filter((m): m is string => m !== null);
+    const explain = explainRegexPattern(pattern);
+    return { valid: true, matches, error: null, explain };
+  } catch (e: any) {
+    return { valid: false, matches: [], error: e.message || "Invalid regex", explain: "" };
+  }
+}
+
+function explainRegexPattern(pattern: string): string {
+  const explanations: string[] = [];
+  if (pattern.startsWith("^")) explanations.push("Anchors to start of string");
+  if (pattern.endsWith("$")) explanations.push("Anchors to end of string");
+  if (pattern.includes(".")) explanations.push("Matches any character (except newline)");
+  if (pattern.includes("*")) explanations.push("Zero or more quantifier");
+  if (pattern.includes("+")) explanations.push("One or more quantifier");
+  if (pattern.includes("?")) explanations.push("Optional (zero or one) quantifier");
+  if (pattern.includes("\\d")) explanations.push("Matches digits");
+  if (pattern.includes("\\w")) explanations.push("Matches word characters");
+  if (pattern.includes("\\s")) explanations.push("Matches whitespace");
+  if (pattern.includes("[")) explanations.push("Character class");
+  if (pattern.includes("(")) explanations.push("Capturing group");
+  if (pattern.includes("|")) explanations.push("Alternation (OR)");
+  if (explanations.length === 0) explanations.push("Custom pattern");
+  return explanations.join("; ");
+}
+
+// ============================================================================
+// 28. Text / JSON Diff Calculator
+// ============================================================================
+
+export function calculateDiff(textA: string, textB: string, type: "lines" | "words" | "json" = "lines"): {
+  diff: { value: string; added?: boolean; removed?: boolean }[];
+} {
+  let rawDiff: any[];
+  if (type === "json") {
+    const a = JSON.stringify(JSON.parse(textA), null, 2);
+    const b = JSON.stringify(JSON.parse(textB), null, 2);
+    rawDiff = diffLines(a, b);
+  } else if (type === "words") {
+    rawDiff = diffWords(textA, textB);
+  } else {
+    rawDiff = diffLines(textA, textB);
+  }
+  return {
+    diff: rawDiff.map((part) => ({
+      value: part.value,
+      added: part.added || undefined,
+      removed: part.removed || undefined,
+    })),
+  };
+}
+
+// ============================================================================
+// 29. IP Validator
+// ============================================================================
+
+export function validateIP(ip: string): { valid: boolean; type: "IPv4" | "IPv6" | "unknown" } {
+  const ipv4 = /^((25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)\.){3}(25[0-5]|2[0-4]\d|1\d\d|[1-9]?\d)$/;
+  const ipv6 = /^(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/;
+  if (ipv4.test(ip)) return { valid: true, type: "IPv4" };
+  if (ipv6.test(ip)) return { valid: true, type: "IPv6" };
+  return { valid: false, type: "unknown" };
+}
+
+// ============================================================================
+// 30. Batch API
+// ============================================================================
+
+interface BatchRequest {
+  endpoint: string;
+  params?: Record<string, unknown>;
+}
+
+interface BatchResponse {
+  endpoint: string;
+  status: "success" | "error";
+  data?: unknown;
+  error?: string;
+}
+
+export async function batchAPI(requests: BatchRequest[]): Promise<BatchResponse[]> {
+  const responses: BatchResponse[] = [];
+  for (const req of requests) {
+    try {
+      responses.push({ endpoint: req.endpoint, status: "success", data: await executeBatchEndpoint(req.endpoint, req.params) });
+    } catch (e: any) {
+      responses.push({ endpoint: req.endpoint, status: "error", error: e.message });
+    }
+  }
+  return responses;
+}
+
+async function executeBatchEndpoint(endpoint: string, params?: Record<string, unknown>): Promise<unknown> {
+  const p = params || {};
+  switch (endpoint) {
+    case "totp.generate": return { token: generateTOTP(p.secret as string) };
+    case "totp.validate": return { valid: validateTOTP(p.secret as string, p.token as string) };
+    case "email.checkDisposable": return { isDisposable: isDisposableEmail(p.email as string), email: p.email };
+    case "qrcode.generate": return { url: await generateQRCode(p.text as string, p.size as number, p.color as string, p.bgColor as string) };
+    case "geo.getIPInfo": return await getIPGeoData(p.ip as string);
+    case "workingDays.calculate": return { days: calculateWorkingDays(p.startDate as string, p.endDate as string, p.holidays as string[]) };
+    case "password.strength": return evaluatePasswordStrength(p.password as string);
+    case "units.convert": return convertUnits(p.value as number, p.fromUnit as string, p.toUnit as string, p.category as string);
+    case "units.convertTemperature": return convertTemperature(p.value as number, p.fromUnit as "c" | "f" | "k", p.toUnit as "c" | "f" | "k");
+    case "currency.convert": return await convertCurrency(p.amount as number, p.fromCurrency as string, p.toCurrency as string);
+    case "text.caseConvert": return { result: convertTextCase(p.text as string, p.format as any) };
+    case "text.base64Encode": return { encoded: encodeBase64(p.text as string) };
+    case "text.base64Decode": return { decoded: decodeBase64(p.encoded as string) };
+    case "text.filterProfanity": return filterProfanity(p.text as string, p.censor as boolean);
+    case "dev.generateUUID": return { uuid: generateUUID() };
+    case "dev.generateCUID": return { cuid: generateCUID() };
+    case "dev.loremIpsum": return { text: generateLoremIpsum(p.wordCount as number) };
+    case "dev.jsonToCSV": return { csv: jsonToCSV(p.json as any[]) };
+    case "dev.colorPalette": return generateColorPalette(p.hex as string);
+    case "dev.gravatarURL": return { url: getGravatarURL(p.email as string, p.size as number) };
+    case "dev.placeholderImage": return { url: getPlaceholderImageURL(p.width as number, p.height as number, p.bgColor as string, p.text as string) };
+    case "dev.morseEncode": return { morse: textToMorse(p.text as string) };
+    case "dev.morseDecode": return { text: morseToText(p.morse as string) };
+    case "dev.calculateBMI": return calculateBMI(p.weight as number, p.height as number);
+    case "dev.parseUserAgent": return parseUserAgent(p.userAgent as string);
+    case "hash.generate": return { hash: generateHash(p.text as string, p.algorithm as any) };
+    case "jwt.encode": return { token: encodeJWT(p.payload as any, p.secret as string) };
+    case "jwt.decode": return decodeJWT(p.token as string);
+    case "jwt.validate": return { valid: validateJWT(p.token as string, p.secret as string) };
+    case "fakeData.generate": return { data: generateFakeData(p.type as string, p.count as number) };
+    case "markdown.toHTML": return { html: markdownToHTML(p.markdown as string) };
+    case "html.sanitize": return { clean: sanitizeHTML(p.dirty as string) };
+    case "cron.parse": return parseCron(p.expression as string);
+    case "regex.test": return testRegex(p.pattern as string, p.flags as string, p.testString as string);
+    case "diff.calculate": return calculateDiff(p.textA as string, p.textB as string, p.type as any);
+    case "ip.validate": return validateIP(p.ip as string);
+    default:
+      throw new Error(`Unknown batch endpoint: ${endpoint}`);
+  }
 }

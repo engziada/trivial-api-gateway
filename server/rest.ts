@@ -100,13 +100,14 @@ restRouter.get("/units/convert", (req, res) => {
   }
 });
 
-restRouter.get("/currency/convert", (req, res) => {
+restRouter.get("/currency/convert", async (req, res) => {
   try {
     const { amount, fromCurrency, toCurrency } = req.query;
     if (!amount || !fromCurrency || !toCurrency || typeof fromCurrency !== "string" || typeof toCurrency !== "string") {
       throw new Error("Missing required parameters");
     }
-    res.json({ success: true, data: api.convertCurrency(parseFloat(amount as string), fromCurrency, toCurrency) });
+    const data = await api.convertCurrency(parseFloat(amount as string), fromCurrency, toCurrency);
+    res.json({ success: true, data });
   } catch (error: any) {
     res.status(400).json({ success: false, error: error.message });
   }
@@ -245,6 +246,127 @@ restRouter.get("/dev/parseUserAgent", (req, res) => {
     const { userAgent } = req.query;
     if (typeof userAgent !== "string") throw new Error("Missing userAgent");
     res.json({ success: true, data: api.parseUserAgent(userAgent) });
+  } catch (error: any) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+restRouter.get("/hash/generate", (req, res) => {
+  try {
+    const { text, algorithm } = req.query;
+    if (typeof text !== "string") throw new Error("Missing text");
+    res.json({ success: true, data: { hash: api.generateHash(text, (algorithm as any) || "sha256") } });
+  } catch (error: any) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+restRouter.post("/jwt/encode", (req, res) => {
+  try {
+    const { payload, secret } = req.body;
+    if (!payload || typeof secret !== "string") throw new Error("Missing payload or secret");
+    res.json({ success: true, data: { token: api.encodeJWT(payload, secret) } });
+  } catch (error: any) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+restRouter.post("/jwt/decode", (req, res) => {
+  try {
+    const { token } = req.body;
+    if (typeof token !== "string") throw new Error("Missing token");
+    res.json({ success: true, data: api.decodeJWT(token) });
+  } catch (error: any) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+restRouter.post("/jwt/validate", (req, res) => {
+  try {
+    const { token, secret } = req.body;
+    if (typeof token !== "string" || typeof secret !== "string") throw new Error("Missing token or secret");
+    res.json({ success: true, data: { valid: api.validateJWT(token, secret) } });
+  } catch (error: any) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+restRouter.get("/fakeData/generate", (req, res) => {
+  try {
+    const { type, count } = req.query;
+    if (typeof type !== "string") throw new Error("Missing type");
+    res.json({ success: true, data: { data: api.generateFakeData(type, count ? parseInt(count as string) : 1) } });
+  } catch (error: any) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+restRouter.post("/markdown/toHTML", (req, res) => {
+  try {
+    const { markdown } = req.body;
+    if (typeof markdown !== "string") throw new Error("Missing markdown");
+    res.json({ success: true, data: { html: api.markdownToHTML(markdown) } });
+  } catch (error: any) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+restRouter.post("/html/sanitize", (req, res) => {
+  try {
+    const { dirty } = req.body;
+    if (typeof dirty !== "string") throw new Error("Missing dirty");
+    res.json({ success: true, data: { clean: api.sanitizeHTML(dirty) } });
+  } catch (error: any) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+restRouter.get("/cron/parse", (req, res) => {
+  try {
+    const { expression } = req.query;
+    if (typeof expression !== "string") throw new Error("Missing expression");
+    res.json({ success: true, data: api.parseCron(expression) });
+  } catch (error: any) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+restRouter.get("/regex/test", (req, res) => {
+  try {
+    const { pattern, flags, testString } = req.query;
+    if (typeof pattern !== "string") throw new Error("Missing pattern");
+    res.json({ success: true, data: api.testRegex(pattern, (flags as string) || "", (testString as string) || "") });
+  } catch (error: any) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+restRouter.post("/diff/calculate", (req, res) => {
+  try {
+    const { textA, textB, type } = req.body;
+    if (typeof textA !== "string" || typeof textB !== "string") throw new Error("Missing textA or textB");
+    res.json({ success: true, data: api.calculateDiff(textA, textB, (type as any) || "lines") });
+  } catch (error: any) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+restRouter.get("/ip/validate", (req, res) => {
+  try {
+    const { ip } = req.query;
+    if (typeof ip !== "string") throw new Error("Missing ip");
+    res.json({ success: true, data: api.validateIP(ip) });
+  } catch (error: any) {
+    res.status(400).json({ success: false, error: error.message });
+  }
+});
+
+restRouter.post("/batch", async (req, res) => {
+  try {
+    const { requests } = req.body;
+    if (!Array.isArray(requests)) throw new Error("Missing requests array");
+    const data = await api.batchAPI(requests);
+    res.json({ success: true, data });
   } catch (error: any) {
     res.status(400).json({ success: false, error: error.message });
   }

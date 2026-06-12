@@ -108,7 +108,7 @@ export const appRouter = router({
           fromCurrency: z.string(),
           toCurrency: z.string(),
         }))
-        .query(({ input }) => api.convertCurrency(input.amount, input.fromCurrency, input.toCurrency)),
+        .query(async ({ input }) => api.convertCurrency(input.amount, input.fromCurrency, input.toCurrency)),
     }),
 
     // 9. Text Utilities
@@ -177,6 +177,90 @@ export const appRouter = router({
         const info = api.parseUserAgent(input.userAgent);
         return info;
       }),
+    }),
+
+    // 11. Hash Generator
+    hash: router({
+      generate: publicProcedure
+        .input(z.object({ text: z.string(), algorithm: z.enum(["md5", "sha256", "sha512"]).default("sha256") }))
+        .query(({ input }) => ({ hash: api.generateHash(input.text, input.algorithm) })),
+    }),
+
+    // 12. JWT Tools
+    jwt: router({
+      encode: publicProcedure
+        .input(z.object({ payload: z.record(z.string(), z.unknown()), secret: z.string() }))
+        .mutation(({ input }) => ({ token: api.encodeJWT(input.payload, input.secret) })),
+      decode: publicProcedure
+        .input(z.object({ token: z.string() }))
+        .mutation(({ input }) => api.decodeJWT(input.token)),
+      validate: publicProcedure
+        .input(z.object({ token: z.string(), secret: z.string() }))
+        .mutation(({ input }) => ({ valid: api.validateJWT(input.token, input.secret) })),
+    }),
+
+    // 13. Fake Data Generator
+    fakeData: router({
+      generate: publicProcedure
+        .input(z.object({ type: z.string(), count: z.number().default(1) }))
+        .query(({ input }) => ({ data: api.generateFakeData(input.type, input.count) })),
+    }),
+
+    // 14. Markdown to HTML
+    markdown: router({
+      toHTML: publicProcedure
+        .input(z.object({ markdown: z.string() }))
+        .mutation(({ input }) => ({ html: api.markdownToHTML(input.markdown) })),
+    }),
+
+    // 15. HTML Sanitizer
+    html: router({
+      sanitize: publicProcedure
+        .input(z.object({ dirty: z.string() }))
+        .mutation(({ input }) => ({ clean: api.sanitizeHTML(input.dirty) })),
+    }),
+
+    // 16. Cron Expression Parser
+    cron: router({
+      parse: publicProcedure
+        .input(z.object({ expression: z.string() }))
+        .query(({ input }) => api.parseCron(input.expression)),
+    }),
+
+    // 17. Regex Tester
+    regex: router({
+      test: publicProcedure
+        .input(z.object({
+          pattern: z.string(),
+          flags: z.string().default(""),
+          testString: z.string().default(""),
+        }))
+        .query(({ input }) => api.testRegex(input.pattern, input.flags, input.testString)),
+    }),
+
+    // 18. Diff Calculator
+    diff: router({
+      calculate: publicProcedure
+        .input(z.object({
+          textA: z.string(),
+          textB: z.string(),
+          type: z.enum(["lines", "words", "json"]).default("lines"),
+        }))
+        .mutation(({ input }) => api.calculateDiff(input.textA, input.textB, input.type)),
+    }),
+
+    // 19. IP Validator
+    ip: router({
+      validate: publicProcedure
+        .input(z.object({ ip: z.string() }))
+        .query(({ input }) => api.validateIP(input.ip)),
+    }),
+
+    // 20. Batch API
+    batch: router({
+      execute: publicProcedure
+        .input(z.object({ requests: z.array(z.object({ endpoint: z.string(), params: z.record(z.string(), z.unknown()).optional() })) }))
+        .mutation(async ({ input }) => api.batchAPI(input.requests)),
     }),
   }),
 });

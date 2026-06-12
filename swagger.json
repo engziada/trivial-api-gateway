@@ -3,7 +3,7 @@
   "info": {
     "title": "Trivial API Gateway",
     "version": "1.0.0",
-    "description": "A collection of 20 trivial utility APIs."
+    "description": "A collection of 30 utility APIs."
   },
   "servers": [
     {
@@ -27,7 +27,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -55,7 +60,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -75,7 +85,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -116,7 +131,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -136,7 +156,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -171,7 +196,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -191,7 +221,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -234,7 +269,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -270,7 +310,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -298,7 +343,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -318,7 +368,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -338,7 +393,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -365,7 +425,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -375,7 +440,12 @@
         "summary": "Generate UUID",
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -385,7 +455,12 @@
         "summary": "Generate CUID",
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -404,7 +479,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -432,7 +512,12 @@
         },
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -452,7 +537,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -479,7 +569,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -521,7 +616,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -541,7 +641,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -561,7 +666,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -589,7 +699,12 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
       }
@@ -609,9 +724,125 @@
         ],
         "responses": {
           "200": {
-            "description": "Success"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/WrappedResponse" }
+              }
+            }
           }
         }
+      }
+    },
+    "/hash/generate": {
+      "get": {
+        "summary": "Generate Hash",
+        "parameters": [
+          { "name": "text", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "algorithm", "in": "query", "schema": { "type": "string", "enum": ["md5","sha256","sha512"], "default": "sha256" } }
+        ],
+        "responses": { "200": { "description": "Success", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WrappedResponse" } } } } }
+      }
+    },
+    "/jwt/encode": {
+      "post": {
+        "summary": "Encode JWT",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "properties": { "payload": { "type": "object" }, "secret": { "type": "string" } }, "required": ["payload","secret"] } } } },
+        "responses": { "200": { "description": "Success", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WrappedResponse" } } } } }
+      }
+    },
+    "/jwt/decode": {
+      "post": {
+        "summary": "Decode JWT",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "properties": { "token": { "type": "string" } }, "required": ["token"] } } } },
+        "responses": { "200": { "description": "Success", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WrappedResponse" } } } } }
+      }
+    },
+    "/jwt/validate": {
+      "post": {
+        "summary": "Validate JWT",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "properties": { "token": { "type": "string" }, "secret": { "type": "string" } }, "required": ["token","secret"] } } } },
+        "responses": { "200": { "description": "Success", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WrappedResponse" } } } } }
+      }
+    },
+    "/fakeData/generate": {
+      "get": {
+        "summary": "Generate Fake Data",
+        "parameters": [
+          { "name": "type", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "count", "in": "query", "schema": { "type": "integer", "default": 1 } }
+        ],
+        "responses": { "200": { "description": "Success", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WrappedResponse" } } } } }
+      }
+    },
+    "/markdown/toHTML": {
+      "post": {
+        "summary": "Convert Markdown to HTML",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "properties": { "markdown": { "type": "string" } }, "required": ["markdown"] } } } },
+        "responses": { "200": { "description": "Success", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WrappedResponse" } } } } }
+      }
+    },
+    "/html/sanitize": {
+      "post": {
+        "summary": "Sanitize HTML",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "properties": { "dirty": { "type": "string" } }, "required": ["dirty"] } } } },
+        "responses": { "200": { "description": "Success", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WrappedResponse" } } } } }
+      }
+    },
+    "/cron/parse": {
+      "get": {
+        "summary": "Parse Cron Expression",
+        "parameters": [
+          { "name": "expression", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Success", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WrappedResponse" } } } } }
+      }
+    },
+    "/regex/test": {
+      "get": {
+        "summary": "Test Regex",
+        "parameters": [
+          { "name": "pattern", "in": "query", "required": true, "schema": { "type": "string" } },
+          { "name": "flags", "in": "query", "schema": { "type": "string", "default": "" } },
+          { "name": "testString", "in": "query", "schema": { "type": "string", "default": "" } }
+        ],
+        "responses": { "200": { "description": "Success", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WrappedResponse" } } } } }
+      }
+    },
+    "/diff/calculate": {
+      "post": {
+        "summary": "Calculate Diff",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "properties": { "textA": { "type": "string" }, "textB": { "type": "string" }, "type": { "type": "string", "enum": ["lines","words","json"], "default": "lines" } }, "required": ["textA","textB"] } } } },
+        "responses": { "200": { "description": "Success", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WrappedResponse" } } } } }
+      }
+    },
+    "/ip/validate": {
+      "get": {
+        "summary": "Validate IP Address",
+        "parameters": [
+          { "name": "ip", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": { "200": { "description": "Success", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WrappedResponse" } } } } }
+      }
+    },
+    "/batch": {
+      "post": {
+        "summary": "Batch API",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "properties": { "requests": { "type": "array", "items": { "type": "object", "properties": { "endpoint": { "type": "string" }, "params": { "type": "object" } }, "required": ["endpoint"] } } }, "required": ["requests"] } } } },
+        "responses": { "200": { "description": "Success", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/WrappedResponse" } } } } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "WrappedResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "data": { "type": "object" },
+          "error": { "type": "string" }
+        },
+        "required": ["success"]
       }
     }
   }

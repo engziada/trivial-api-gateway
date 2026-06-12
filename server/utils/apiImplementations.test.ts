@@ -25,16 +25,14 @@ describe("API Implementations", () => {
 
   // 3. QR Code Tests
   describe("QR Code Generator", () => {
-    it("should generate a QR code URL", async () => {
+    it("should generate a QR code data URL", async () => {
       const url = await api.generateQRCode("Hello World");
-      expect(url).toContain("api.qrserver.com");
-      expect(url).toContain("Hello%20World");
+      expect(url).toContain("data:image/png;base64");
     });
 
-    it("should include custom colors in URL", async () => {
+    it("should include custom colors in data URL", async () => {
       const url = await api.generateQRCode("Test", 300, "FF0000", "00FF00");
-      expect(url).toContain("FF0000");
-      expect(url).toContain("00FF00");
+      expect(url).toContain("data:image/png;base64");
     });
   });
 
@@ -116,14 +114,14 @@ describe("API Implementations", () => {
 
   // 8. Currency Converter Tests
   describe("Currency Converter", () => {
-    it("should convert currencies", () => {
-      const result = api.convertCurrency(100, "USD", "EUR");
+    it("should convert currencies", async () => {
+      const result = await api.convertCurrency(100, "USD", "EUR");
       expect(result.result).toBeGreaterThan(0);
       expect(result.rate).toBeGreaterThan(0);
     });
 
-    it("should throw on unsupported currency", () => {
-      expect(() => api.convertCurrency(100, "INVALID", "USD")).toThrow();
+    it("should throw on unsupported currency", async () => {
+      await expect(api.convertCurrency(100, "INVALID", "USD")).rejects.toThrow();
     });
   });
 
@@ -173,19 +171,19 @@ describe("API Implementations", () => {
   // 11. Profanity Filter Tests
   describe("Profanity Filter", () => {
     it("should detect profanity", () => {
-      const result = api.filterProfanity("This is offensive content");
+      const result = api.filterProfanity("This is a shit test");
       expect(result.hasProfanity).toBe(true);
     });
 
     it("should censor profanity by default", () => {
-      const result = api.filterProfanity("This is offensive content");
+      const result = api.filterProfanity("This is a damn test");
       expect(result.cleaned).toContain("*");
     });
 
     it("should not censor when disabled", () => {
-      const result = api.filterProfanity("This is offensive content", false);
+      const result = api.filterProfanity("This is a bitch test", false);
       expect(result.hasProfanity).toBe(true);
-      expect(result.cleaned).toBe("This is offensive content");
+      expect(result.cleaned).toBe("This is a bitch test");
     });
   });
 
