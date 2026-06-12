@@ -17,6 +17,7 @@ interface APIEndpoint {
   endpoint: string;
   inputs: { label: string; key: string; type: "text" | "number" | "email" }[];
   procedurePath: string;
+  method?: "GET" | "POST";
 }
 
 const API_ENDPOINTS: APIEndpoint[] = [
@@ -234,34 +235,178 @@ const API_ENDPOINTS: APIEndpoint[] = [
     procedurePath: "utils.dev.parseUserAgent",
     inputs: [{ label: "User Agent String", key: "userAgent", type: "text" }],
   },
+  {
+    id: "hash",
+    name: "Hash Generator",
+    category: "Security",
+    description: "Generate MD5, SHA-256, or SHA-512 hashes from any text",
+    endpoint: "utils.hash.generate",
+    procedurePath: "utils.hash.generate",
+    inputs: [
+      { label: "Text", key: "text", type: "text" },
+      { label: "Algorithm (md5|sha256|sha512)", key: "algorithm", type: "text" },
+    ],
+  },
+  {
+    id: "jwtencode",
+    name: "JWT Encoder",
+    category: "Security",
+    description: "Encode a JSON payload into a signed JWT token",
+    endpoint: "utils.jwt.encode",
+    procedurePath: "utils.jwt.encode",
+    method: "POST",
+    inputs: [
+      { label: "Payload (JSON)", key: "payload", type: "text" },
+      { label: "Secret", key: "secret", type: "text" },
+    ],
+  },
+  {
+    id: "jwtdecode",
+    name: "JWT Decoder",
+    category: "Security",
+    description: "Decode a JWT token to inspect its payload and metadata",
+    endpoint: "utils.jwt.decode",
+    procedurePath: "utils.jwt.decode",
+    method: "POST",
+    inputs: [{ label: "Token", key: "token", type: "text" }],
+  },
+  {
+    id: "jwtvalidate",
+    name: "JWT Validator",
+    category: "Security",
+    description: "Validate a JWT signature against a secret key",
+    endpoint: "utils.jwt.validate",
+    procedurePath: "utils.jwt.validate",
+    method: "POST",
+    inputs: [
+      { label: "Token", key: "token", type: "text" },
+      { label: "Secret", key: "secret", type: "text" },
+    ],
+  },
+  {
+    id: "fakedata",
+    name: "Fake Data Generator",
+    category: "Developer",
+    description: "Generate realistic fake data for testing and prototyping",
+    endpoint: "utils.fakeData.generate",
+    procedurePath: "utils.fakeData.generate",
+    inputs: [
+      { label: "Type (name|email|company|address|phone|uuid|sentence)", key: "type", type: "text" },
+      { label: "Count", key: "count", type: "number" },
+    ],
+  },
+  {
+    id: "markdown",
+    name: "Markdown to HTML",
+    category: "Developer",
+    description: "Convert Markdown text to sanitized HTML",
+    endpoint: "utils.markdown.toHTML",
+    procedurePath: "utils.markdown.toHTML",
+    method: "POST",
+    inputs: [{ label: "Markdown", key: "markdown", type: "text" }],
+  },
+  {
+    id: "htmlsanitize",
+    name: "HTML Sanitizer",
+    category: "Security",
+    description: "Strip dangerous tags and attributes from untrusted HTML",
+    endpoint: "utils.html.sanitize",
+    procedurePath: "utils.html.sanitize",
+    method: "POST",
+    inputs: [{ label: "Raw HTML", key: "dirty", type: "text" }],
+  },
+  {
+    id: "cron",
+    name: "Cron Expression Parser",
+    category: "Developer",
+    description: "Parse cron expressions and get human-readable descriptions with next run times",
+    endpoint: "utils.cron.parse",
+    procedurePath: "utils.cron.parse",
+    inputs: [{ label: "Cron Expression", key: "expression", type: "text" }],
+  },
+  {
+    id: "regex",
+    name: "Regex Tester",
+    category: "Developer",
+    description: "Test regular expressions with live match results and explanations",
+    endpoint: "utils.regex.test",
+    procedurePath: "utils.regex.test",
+    inputs: [
+      { label: "Pattern", key: "pattern", type: "text" },
+      { label: "Flags", key: "flags", type: "text" },
+      { label: "Test String", key: "testString", type: "text" },
+    ],
+  },
+  {
+    id: "diff",
+    name: "Diff Calculator",
+    category: "Developer",
+    description: "Calculate line, word, or JSON diffs between two texts",
+    endpoint: "utils.diff.calculate",
+    procedurePath: "utils.diff.calculate",
+    method: "POST",
+    inputs: [
+      { label: "Text A", key: "textA", type: "text" },
+      { label: "Text B", key: "textB", type: "text" },
+      { label: "Type (lines|words|json)", key: "type", type: "text" },
+    ],
+  },
+  {
+    id: "ipvalidate",
+    name: "IP Validator",
+    category: "Validation",
+    description: "Validate IPv4 and IPv6 addresses and classify their type",
+    endpoint: "utils.ip.validate",
+    procedurePath: "utils.ip.validate",
+    inputs: [{ label: "IP Address", key: "ip", type: "text" }],
+  },
+  {
+    id: "batch",
+    name: "Batch API",
+    category: "Developer",
+    description: "Execute multiple API calls in a single request",
+    endpoint: "utils.batch.execute",
+    procedurePath: "utils.batch.execute",
+    method: "POST",
+    inputs: [{ label: "Requests (JSON array)", key: "requests", type: "text" }],
+  },
 ];
 
-async function callTRPCEndpoint(procedurePath: string, input: Record<string, unknown>) {
-  // tRPC v11 expects input wrapped in { json: ... } envelope
-  // For GET queries: /api/trpc/[procedure]?input={"json":{...}}
+async function callTRPCEndpoint(procedurePath: string, input: Record<string, unknown>, method: "GET" | "POST" = "GET") {
   const wrappedInput = { json: input };
-  const encodedInput = encodeURIComponent(JSON.stringify(wrappedInput));
-  const url = `/api/trpc/${procedurePath}?input=${encodedInput}`;
-  
-  const response = await fetch(url, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  });
 
+  if (method === "GET") {
+    const encodedInput = encodeURIComponent(JSON.stringify(wrappedInput));
+    const url = `/api/trpc/${procedurePath}?input=${encodedInput}`;
+    const response = await fetch(url, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    });
+    const data = await response.json();
+    if (data.error) {
+      const errorMsg = data.error.json?.message || data.error.message || "Unknown error";
+      throw new Error(errorMsg);
+    }
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    return data.result?.data || data.result || data;
+  }
+
+  const url = `/api/trpc/${procedurePath}`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(wrappedInput),
+  });
   const data = await response.json();
-  
-  // Handle tRPC error response
   if (data.error) {
     const errorMsg = data.error.json?.message || data.error.message || "Unknown error";
     throw new Error(errorMsg);
   }
-  
-  // Handle HTTP errors
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
-
-  // Return the nested data structure
   return data.result?.data || data.result || data;
 }
 
@@ -292,7 +437,7 @@ export default function Home() {
         if (inputs[field.key] !== undefined && inputs[field.key] !== "") {
           if (field.type === "number") {
             input[field.key] = Number(inputs[field.key]);
-          } else if (field.key === "json") {
+          } else if (["json", "payload", "requests"].includes(field.key)) {
             input[field.key] = JSON.parse(String(inputs[field.key]));
           } else if (field.key === "censor") {
             input[field.key] = String(inputs[field.key]) === "true";
@@ -302,7 +447,7 @@ export default function Home() {
         }
       });
 
-      const result = await callTRPCEndpoint(api.procedurePath, input);
+      const result = await callTRPCEndpoint(api.procedurePath, input, api.method);
       setResults({ loading: false, data: result, error: null });
     } catch (err) {
       setResults({ loading: false, data: null, error: (err as Error).message });
@@ -315,7 +460,7 @@ export default function Home() {
       <header className="border-b-8 border-red-600 px-8 py-16">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-8xl font-black tracking-tighter mb-4">TRIVIAL API GATEWAY</h1>
-          <p className="text-2xl font-light tracking-wide">20 Essential Developer Utilities. Zero Friction.</p>
+          <p className="text-2xl font-light tracking-wide">30 Essential Developer Utilities. Zero Friction.</p>
         </div>
       </header>
 
